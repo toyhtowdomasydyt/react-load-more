@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 import Header from '../Header/Header';
+import UserList from '../UserList/UserList';
 
 import axios from 'axios';
 
@@ -42,6 +43,7 @@ class App extends Component {
         <div className="container">
           {isLoading && <p>Loading...</p>}
           {errorMsg && <p className='text-danger'>{errorMsg}</p>}
+          <UserList users={users}/>
         </div>
       </div>
     );
