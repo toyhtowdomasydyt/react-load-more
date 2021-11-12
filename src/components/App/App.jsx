@@ -11,26 +11,50 @@ class App extends Component {
 
     this.state = {
       users: [],
+      page: 0,
       isLoading: false,
       errorMsg: ''
     }
   }
 
   componentDidMount() {
+    this.loadUsers();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.page !== this.state.page) {
+      this.loadUsers();
+    }
+  }
+
+  loadUsers = async () => {
+    const {page} = this.state;
+
     this.setState({isLoading: true});
 
-    axios
-      .get('https://randomuser.me/api/?page=0&results=10')
-      .then((response) => {
-        this.setState({users: response.data.results, errorMsg: ''});
-      })
-      .catch(err => this.setState({
+    try {
+      const response = await axios.get(`https://randomuser.me/api/?page=${page}&results=10`);
+
+      this.setState(prevState => ({
+        users: [...prevState.users, ...response.data.results],
+        errorMsg: ''
+      }));
+
+    } catch (err) {
+      this.setState({
         errorMsg: 'Error while loading data. Try again later.'
-      }))
-      .finally(() => {
-        this.setState({isLoading: false});
       });
-  }
+
+    } finally {
+      this.setState({isLoading: false});
+    }
+  };
+
+  loadMore = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1
+    }));
+  };
 
   render() {
     const {users, isLoading, errorMsg} = this.state;
@@ -44,6 +68,11 @@ class App extends Component {
           {isLoading && <p>Loading...</p>}
           {errorMsg && <p className='text-danger'>{errorMsg}</p>}
           <UserList users={users}/>
+          <div className='mx-auto'>
+            <button className='btn btn-primary' onClick={this.loadMore}>
+              {isLoading ? 'Loading...' : 'Load More'}
+            </button>
+          </div>
         </div>
       </div>
     );
