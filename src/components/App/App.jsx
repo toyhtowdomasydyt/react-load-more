@@ -68,8 +68,8 @@ class App extends Component {
           {isLoading && <p>Loading...</p>}
           {errorMsg && <p className='text-danger'>{errorMsg}</p>}
           <UserList users={users}/>
-          <div className='mx-auto'>
-            <button className='btn btn-primary' onClick={this.loadMore}>
+          <div className='mb-3'>
+            <button className='btn btn-primary d-block mx-auto' onClick={this.loadMore}>
               {isLoading ? 'Loading...' : 'Load More'}
             </button>
           </div>
